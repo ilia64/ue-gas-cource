@@ -24,9 +24,13 @@ void AAuraPlayerController::BeginPlay()
 	Super::BeginPlay();
 	check(AuraInputMappingContext);
 
-	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(Subsystem);
-	Subsystem->AddMappingContext(AuraInputMappingContext, 0);
+	const ULocalPlayer* LocalPlayer = GetLocalPlayer();
+	if (LocalPlayer)
+	{
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+		check(Subsystem);
+		Subsystem->AddMappingContext(AuraInputMappingContext, 0);
+	}
 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
@@ -52,7 +56,7 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	{
 		return;
 	}
-	
+
 	const FVector2d InputAxisVector = InputActionValue.Get<FVector2d>();
 	const FRotator Rotation = GetControlRotation();
 	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
